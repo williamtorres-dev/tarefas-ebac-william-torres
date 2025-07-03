@@ -1,0 +1,20 @@
+INÍCIO
+    1. Desperto;
+    2. Abro o olho;
+    3. Desligo o alarme;
+    4. Levanto;
+    5. Vou beber água;
+    6. Faço xixi;
+    7. Retorno para a cama;
+    8. Sento na cama;
+    9. Oro;
+    10. Leio a Bíblia;
+    11. Leio a meditação diária;
+    12. Leio a lição;
+    13. Ligo o celular;
+    14. Vejo as notificações no Whatsapp;
+    15. Respondo as mensagens;
+    16. Levanto;
+    17. Vou tomar café da manhã;
+    18. Escovo os dentes;
+FIM
