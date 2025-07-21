@@ -12,7 +12,13 @@ public class MediaNotas {
     public void lerNotas() {
         for (int i = 0; i < 4; i++) {
             System.out.print("Digite a nota " + (i + 1) + ": ");
-            notas[i] = scanner.nextDouble();
+            String entrada = scanner.next().replace(",", ".");
+            try {
+                notas[i] = Double.parseDouble(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Digite a nota novamente.");
+                i--; // volta a perguntar a mesma nota
+            }
         }
     }
 
