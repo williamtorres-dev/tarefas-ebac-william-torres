@@ -5,16 +5,20 @@ import java.util.Objects;
 public class Cliente {
 
   private String nome;
-  private String cpf;
+  private final String cpf;
   private String tel;
   private String end;
   private Integer numero;
   private String cidade;
   private String estado;
 
-  public Cliente(String nome, String cpf, String tel, String end, Integer numero, String cidade, String estado) {
+  public Cliente(String nome, String cpf, String tel, String end,
+      Integer numero, String cidade, String estado) {
+    if (cpf == null || cpf.trim().isEmpty()) {
+      throw new IllegalArgumentException("CPF não pode ser vazio");
+    }
     this.nome = nome;
-    this.cpf = cpf;
+    this.cpf = cpf.trim();
     this.tel = tel;
     this.end = end;
     this.numero = numero;
@@ -33,10 +37,7 @@ public class Cliente {
   public String getCpf() {
     return cpf;
   }
-
-  public void setCpf(String cpf) {
-    this.cpf = cpf;
-  }
+  // setter de CPF removido (imutável)
 
   public String getTel() {
     return tel;
@@ -84,9 +85,7 @@ public class Cliente {
       return true;
     if (o == null || getClass() != o.getClass())
       return false;
-
     Cliente cliente = (Cliente) o;
-
     return Objects.equals(cpf, cliente.cpf);
   }
 
@@ -97,15 +96,14 @@ public class Cliente {
 
   @Override
   public String toString() {
-    return "Cliente{\n" +
-        "Nome='" + nome + '\'' +
-        ",\nCPF=" + cpf +
-        ",\nTelefone=" + tel +
-        ",\nEndereço='" + end + '\'' +
-        ",\nNúmero=" + numero +
-        ",\nCidade='" + cidade + '\'' +
-        ",\nEstado='" + estado + '\'' +
-        '}';
+    return "Cliente:\n" +
+        "Nome: " + nome +
+        "\nCPF: " + cpf +
+        "\nTelefone: " + tel +
+        "\nEndereço: " + end +
+        "\nNúmero: " + numero +
+        "\nCidade: " + cidade +
+        "\nEstado: " + estado;
   }
 
 }
