@@ -234,7 +234,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemSairActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-String nome = txtNome.getText();
+    String nome = txtNome.getText();
     String cpfStr = txtCPF.getText();
     String telStr = txtTel.getText();
     String end = txtEnd.getText();
@@ -278,12 +278,11 @@ String nome = txtNome.getText();
 
     private void tabelaClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaClientesMouseClicked
         int linhaSelecionada = tabelaClientes.getSelectedRow();
-    Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
-
-    Cliente cliente = this.clienteDAO.consultar(cpf);
-
+    // CPF no modelo é String agora, recupere como String
+    String cpfStr = (String) tabelaClientes.getValueAt(linhaSelecionada, 1);
+    Cliente cliente = clienteDAO.consultar(Long.valueOf(cpfStr));
     txtNome.setText(cliente.getNome());
-    txtCPF.setText(cliente.getCpf().toString());
+    txtCPF.setText(cliente.getCpfString());    // ← aqui
     txtTel.setText(cliente.getTel() != null ? cliente.getTel().toString() : "");
     txtEnd.setText(cliente.getEnd() != null ? cliente.getEnd() : "");
     txtNumero.setText(cliente.getNumero() != null ? cliente.getNumero().toString() : "");
@@ -293,26 +292,38 @@ String nome = txtNome.getText();
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
        int linhaSelecionada = tabelaClientes.getSelectedRow();
-       
-       if (linhaSelecionada >= 0) {
-            int result = JOptionPane.showConfirmDialog(this,"Deseja realmente excluir este cliente?", "CUIDADO",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-        
-            if(result == JOptionPane.YES_OPTION){
-
-                Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
-                this.clienteDAO.excluir(cpf);
-                modelo.removeRow(linhaSelecionada);
-
-                JOptionPane.showMessageDialog(null, "Cliente excluído com sucesso", "Sucesso",JOptionPane.INFORMATION_MESSAGE);
-                limparCampos();
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Nenhum cliente selecionado.", "ERRO",JOptionPane.INFORMATION_MESSAGE);
+    if (linhaSelecionada >= 0) {
+        int result = JOptionPane.showConfirmDialog(
+            this,
+            "Deseja realmente excluir este cliente?",
+            "CUIDADO",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+        if (result == JOptionPane.YES_OPTION) {
+            // Converte CPF da tabela (String formatado) para Long
+            String cpfStr = (String) tabelaClientes.getValueAt(linhaSelecionada, 1);
+            Long cpf = Long.valueOf(cpfStr);
+            // Chama o DAO para excluir
+            this.clienteDAO.excluir(cpf);
+            // Remove a linha da tabela
+            modelo.removeRow(linhaSelecionada);
+            JOptionPane.showMessageDialog(
+                null,
+                "Cliente excluído com sucesso",
+                "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+            limparCampos();
         }
-       
-       
+    } else {
+        JOptionPane.showMessageDialog(
+            null,
+            "Nenhum cliente selecionado.",
+            "ERRO",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+    }
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
@@ -355,15 +366,11 @@ String nome = txtNome.getText();
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
@@ -429,7 +436,7 @@ String nome = txtNome.getText();
     for (Cliente cliente : clienteDAO.todos()) { // Método que retorna todos os clientes da base
         modelo.addRow(new Object[]{
             cliente.getNome(),
-            cliente.getCpf(),
+            cliente.getCpfString(),
             cliente.getTel(),
             cliente.getEnd(),
             cliente.getNumero(),
